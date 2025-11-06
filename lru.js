@@ -26,7 +26,7 @@ function lru(pages, capacity) {
   console.log(`Total Page Faults = ${pageFaults}`);
 }
 
-const pages = [3 ,8 ,2 ,3 ,9 ,1 ,6 ,3 ,8 ,9 ,3 ,6 ,2 ,1 ,3 ];
-const capacity = 5;
+const pages = [4, 7, 6, 1, 7, 6, 1, 2, 7, 2];
+const capacity = 3;
 
 lru(pages, capacity);
