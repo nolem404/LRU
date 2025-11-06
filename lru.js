@@ -1,34 +1,32 @@
-function lruPageReplacement() {
-    const pages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3];
-    const frameCount = 3;
-    let frames = [];
-    let pageFaults = 0;
-    let pageHits = 0;
+function lru(pages, capacity) {
+  let frames = [];
+  let pageFaults = 0;
+  let step = 1;
+  let recent = [];
 
-    console.log("Page Reference\tFrames\t\tStatus");
-
-    for (let i = 0; i < pages.length; i++) {
-        const page = pages[i];
-        if (frames.includes(page)) {
-            frames = frames.filter(p => p !== page);
-            frames.push(page);
-            pageHits++;
-            console.log(`${page}\t\t[${frames.join(" ")}]\t\tHIT`);
-        } else {
-            if (frames.length < frameCount) {
-                frames.push(page);
-            } else {
-                frames.shift();
-                frames.push(page);
-            }
-            pageFaults++;
-            console.log(`${page}\t\t[${frames.join(" ")}]\t\tFAULT`);
-        }
+  for (let page of pages) {
+    if (!frames.includes(page)) {
+      if (frames.length < capacity) {
+        frames.push(page);
+      } else {
+        let lruPage = recent[0];
+        let index = frames.indexOf(lruPage);
+        frames[index] = page;
+        recent.shift();
+      }
+      pageFaults++;
+    } else {
+      recent = recent.filter(p => p !== page);
     }
 
-    console.log("\nTotal Page Faults:", pageFaults);
-    console.log("Total Page Hits:", pageHits);
-    console.log("Page Fault Rate:", (pageFaults / pages.length).toFixed(2));
+    recent.push(page);
+    console.log(`Step ${step++}: Frames = [${frames.join(", ")}]`);
+  }
+
+  console.log(`Total Page Faults = ${pageFaults}`);
 }
 
-lruPageReplacement();
+const pages = [3 ,8 ,2 ,3 ,9 ,1 ,6 ,3 ,8 ,9 ,3 ,6 ,2 ,1 ,3 ];
+const capacity = 5;
+
+lru(pages, capacity);
